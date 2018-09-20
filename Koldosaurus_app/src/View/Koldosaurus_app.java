@@ -15,6 +15,7 @@ import javafx.event.EventHandler;
 import javafx.geometry.Insets;
 import javafx.scene.Group;
 import javafx.scene.Scene;
+import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.RadioButton;
@@ -28,6 +29,7 @@ import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Font;
 import javafx.stage.Stage;
+import javax.swing.JOptionPane;
 
 /**
  *
@@ -87,7 +89,7 @@ public class Koldosaurus_app extends Application {
                     ((Landareak) t.getTableView().getItems().get(
                             t.getTablePosition().getRow())).setColor(t.getNewValue());
                 });
-        
+
         TableColumn<Landareak, String> Height = new TableColumn<>("Height");
         Height.setMinWidth(100);
         Height.setCellValueFactory(
@@ -98,7 +100,7 @@ public class Koldosaurus_app extends Application {
                     ((Landareak) t.getTableView().getItems().get(
                             t.getTablePosition().getRow())).setSize(t.getNewValue());
                 });
-        
+
         TableColumn<Landareak, String> Flower
                 = new TableColumn<>("Flowers");
         Flower.setMinWidth(100);
@@ -121,55 +123,58 @@ public class Koldosaurus_app extends Application {
                     ((Landareak) t.getTableView().getItems().get(
                             t.getTablePosition().getRow())).setSize(t.getNewValue());
                 });
-        
-        
+
         table.setItems(data);
-        table.getColumns().addAll(NameCol, Description, Color, Height,Flower,CName);
-        
+        table.getColumns().addAll(NameCol, Description, Color, Height, Flower, CName);
+
         final TextField addName = new TextField();
         addName.setPromptText("Name");
         addName.setMaxWidth(NameCol.getPrefWidth());
-        
+
         final TextField addDescription = new TextField();
         addDescription.setMaxWidth(Description.getPrefWidth());
         addDescription.setPromptText("Description");
-        
+
         final TextField addColor = new TextField();
         addColor.setMaxWidth(Color.getPrefWidth());
         addColor.setPromptText("Color");
-        
+
         final TextField addAvHeight = new TextField();
         addAvHeight.setMaxWidth(Height.getPrefWidth());
         addAvHeight.setPromptText("Average Height");
-        
+
         final TextField addCName = new TextField();
         addCName.setMaxWidth(CName.getPrefWidth());
         addCName.setPromptText("Cientific name");
-        
+
         final RadioButton Flowers = new RadioButton();
         Flowers.setMaxWidth(Color.getPrefWidth());
         Flowers.setText("Flowers");
-        
+
         final Button addButton = new Button("Add");
         addButton.setOnAction((ActionEvent e) -> {
             //objetu berria sortu
-            Landareak p = new Landareak(
-                    addName.getText(),
-                    addDescription.getText(),
-                    addColor.getText(),
-                    addAvHeight.getText(),
-                    Flowers.isSelected(),
-                    addCName.getText()
-                    );
-            data.add(p);
+            if (addName.getText().equals("") || addDescription.getText().equals("") || addColor.getText().equals("") || addAvHeight.getText().equals("") || addCName.getText().equals("") || Flowers.getText().equals("")) {
 
-            //testuak garbitu
-            addName.clear();
-            addDescription.clear();
-            addColor.clear();
-            addAvHeight.clear();
-            addCName.clear();
-            Flowers.setSelected(false);
+            } else {
+                Landareak p = new Landareak(
+                        addName.getText(),
+                        addDescription.getText(),
+                        addColor.getText(),
+                        addAvHeight.getText(),
+                        Flowers.isSelected(),
+                        addCName.getText()
+                );
+                data.add(p);
+
+                //testuak garbitu
+                addName.clear();
+                addDescription.clear();
+                addColor.clear();
+                addAvHeight.clear();
+                addCName.clear();
+                Flowers.setSelected(false);
+            }
         });
 
         final Button removeButton = new Button("Delete selected");
@@ -178,7 +183,7 @@ public class Koldosaurus_app extends Application {
             data.remove(landare);
         });
 
-        hb.getChildren().addAll(addName, addDescription, addColor,addAvHeight,Flowers,addCName, addButton, removeButton);
+        hb.getChildren().addAll(addName, addDescription, addColor, addAvHeight, Flowers, addCName, addButton, removeButton);
         hb.setSpacing(3);
         final VBox vbox = new VBox();
         vbox.setSpacing(5);
