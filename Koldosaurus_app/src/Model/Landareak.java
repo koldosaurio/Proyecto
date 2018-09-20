@@ -5,27 +5,22 @@
  */
 package Model;
 
-import javafx.application.Application;
-import javafx.event.ActionEvent;
-import javafx.event.EventHandler;
-import javafx.scene.Scene;
-import javafx.scene.control.Button;
-import javafx.scene.layout.StackPane;
-import javafx.stage.Stage;
-
 /**
  *
  * @author DM3-2-15
  */
 public class Landareak {
-    String Name, Description,Color,AvgHeight;
-    Boolean Flowers;
-    public Landareak(String a,String b, String c, String d,Boolean e){
+    private String Name,CName, Description,Color,AvgHeight,Flowers;
+    public Landareak(){
+        
+    }
+    public Landareak(String a,String b, String c, String d,Boolean e,String f){
         setName(a);
         setDescription(b);
         setColor(c);
         setAverageHeight(d);
         setFlowers(e);
+        setCName(f);
     }
     public void setName(String name){
         Name=name;
@@ -40,7 +35,16 @@ public class Landareak {
         AvgHeight=height;
     }
     public void setFlowers(Boolean flow){
-        Flowers=flow;
+        if (flow==true){
+            Flowers="yes";
+        }
+        else{
+            Flowers="no";
+        }
+        
+    }
+    public void setCName(String cname){
+        CName=cname;
     }
     public String getName(){
         return Name;
@@ -54,7 +58,10 @@ public class Landareak {
     public String getAverageHeight(){
         return AvgHeight;
     }
-    public Boolean getFlowers(){
+    public String getFlowers(){
         return Flowers;
+    }
+    public String getCName(){
+        return CName;
     }
 }
