@@ -18,7 +18,7 @@ public class LandareakGertu {
         
         return FXCollections.observableArrayList(
             new Landareak("koldo","mokoldo","kolkoldo","izoldo",true,"izaskun"),
-            new Landareak("","","","",false,""),
+            new Landareak("","","","kagarro",false,""),
             new Landareak("","","","",true,""),
             new Landareak("","","","",true,""),
             new Landareak("","","","",true,"")

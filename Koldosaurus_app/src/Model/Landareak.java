@@ -10,7 +10,7 @@ package Model;
  * @author DM3-2-15
  */
 public class Landareak {
-    private String Name,CName, Description,Color,AvgHeight,Flowers;
+    private String Name,CName, Description,Color,Size,Flowers;
     public Landareak(){
         
     }
@@ -18,7 +18,7 @@ public class Landareak {
         setName(a);
         setDescription(b);
         setColor(c);
-        setAverageHeight(d);
+        setSize(d);
         setFlowers(e);
         setCName(f);
     }
@@ -31,8 +31,8 @@ public class Landareak {
     public void setColor(String col){
         Color=col;
     }
-    public void setAverageHeight(String height){
-        AvgHeight=height;
+    public void setSize(String height){
+        Size=height;
     }
     public void setFlowers(Boolean flow){
         if (flow==true){
@@ -55,8 +55,8 @@ public class Landareak {
     public String getColor(){
         return Color;
     }
-    public String getAverageHeight(){
-        return AvgHeight;
+    public String getSize(){
+        return Size;
     }
     public String getFlowers(){
         return Flowers;

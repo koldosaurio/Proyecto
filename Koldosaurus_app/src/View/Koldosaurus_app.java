@@ -45,7 +45,7 @@ public class Koldosaurus_app extends Application {
 
         ObservableList<Landareak> data = LandareakGertu.cargarDatos();
 
-        stage.setTitle("Datuen Taula");
+        stage.setTitle("Data Table");
         stage.setWidth(800);
         stage.setHeight(550);
         final Label label = new Label("Landareak");
@@ -88,16 +88,15 @@ public class Koldosaurus_app extends Application {
                             t.getTablePosition().getRow())).setColor(t.getNewValue());
                 });
         
-        TableColumn<Landareak, String> AverageHeight
-                = new TableColumn<>("Average Height");
-        AverageHeight.setMinWidth(100);
-        AverageHeight.setCellValueFactory(
-                new PropertyValueFactory<>("averageheight"));
-        AverageHeight.setCellFactory(TextFieldTableCell.<Landareak>forTableColumn());
-        AverageHeight.setOnEditCommit(
+        TableColumn<Landareak, String> Height = new TableColumn<>("Height");
+        Height.setMinWidth(100);
+        Height.setCellValueFactory(
+                new PropertyValueFactory<>("size"));
+        Height.setCellFactory(TextFieldTableCell.<Landareak>forTableColumn());
+        Height.setOnEditCommit(
                 (TableColumn.CellEditEvent<Landareak, String> t) -> {
                     ((Landareak) t.getTableView().getItems().get(
-                            t.getTablePosition().getRow())).setAverageHeight(t.getNewValue());
+                            t.getTablePosition().getRow())).setSize(t.getNewValue());
                 });
         
         TableColumn<Landareak, String> Flower
@@ -109,22 +108,23 @@ public class Koldosaurus_app extends Application {
         Flower.setOnEditCommit(
                 (TableColumn.CellEditEvent<Landareak, String> t) -> {
                     ((Landareak) t.getTableView().getItems().get(
-                            t.getTablePosition().getRow())).setAverageHeight(t.getNewValue());
+                            t.getTablePosition().getRow())).setSize(t.getNewValue());
                 });
         TableColumn<Landareak, String> CName
                 = new TableColumn<>("Cientific Name");
         CName.setMinWidth(150);
         CName.setCellValueFactory(
-                new PropertyValueFactory<>("cname"));
+                new PropertyValueFactory<>("CName"));
         CName.setCellFactory(TextFieldTableCell.<Landareak>forTableColumn());
         CName.setOnEditCommit(
                 (TableColumn.CellEditEvent<Landareak, String> t) -> {
                     ((Landareak) t.getTableView().getItems().get(
-                            t.getTablePosition().getRow())).setAverageHeight(t.getNewValue());
+                            t.getTablePosition().getRow())).setSize(t.getNewValue());
                 });
         
+        
         table.setItems(data);
-        table.getColumns().addAll(NameCol, Description, Color, AverageHeight,Flower,CName);
+        table.getColumns().addAll(NameCol, Description, Color, Height,Flower,CName);
         
         final TextField addName = new TextField();
         addName.setPromptText("Name");
@@ -139,7 +139,7 @@ public class Koldosaurus_app extends Application {
         addColor.setPromptText("Color");
         
         final TextField addAvHeight = new TextField();
-        addAvHeight.setMaxWidth(Color.getPrefWidth());
+        addAvHeight.setMaxWidth(Height.getPrefWidth());
         addAvHeight.setPromptText("Average Height");
         
         final TextField addCName = new TextField();
@@ -169,6 +169,7 @@ public class Koldosaurus_app extends Application {
             addColor.clear();
             addAvHeight.clear();
             addCName.clear();
+            Flowers.setSelected(false);
         });
 
         final Button removeButton = new Button("Delete selected");
