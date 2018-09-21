@@ -157,7 +157,9 @@ public class Koldosaurus_app extends Application {
             if (addName.getText().equals("") || addDescription.getText().equals("") || addColor.getText().equals("") || addAvHeight.getText().equals("") || addCName.getText().equals("") || Flowers.getText().equals("")) {
 
             } else {
-                Landareak p = new Landareak(
+                try{
+                    Float.parseFloat(addAvHeight.getText());
+                    Landareak p = new Landareak(
                         addName.getText(),
                         addDescription.getText(),
                         addColor.getText(),
@@ -174,6 +176,11 @@ public class Koldosaurus_app extends Application {
                 addAvHeight.clear();
                 addCName.clear();
                 Flowers.setSelected(false);
+                }
+                catch(NumberFormatException nf){
+                    
+                }
+                
             }
         });
 
