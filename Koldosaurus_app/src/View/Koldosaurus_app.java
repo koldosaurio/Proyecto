@@ -48,16 +48,20 @@ public class Koldosaurus_app extends Application {
         ObservableList<Landareak> data = LandareakGertu.cargarDatos();
 
         stage.setTitle("Data Table");
-        stage.setWidth(800);
+        stage.setWidth(900);
         stage.setHeight(550);
         final Label label = new Label("Landareak");
         label.setFont(new Font("Arial", 20));
+
+        final Label lab = new Label("");
+        lab.setFont(new Font("Arial", 20));
 
         table.setEditable(true);
 
         TableColumn<Landareak, String> NameCol
                 = new TableColumn<>("Name");
         NameCol.setMinWidth(100);
+        NameCol.setMaxWidth(150);
         NameCol.setCellValueFactory(
                 new PropertyValueFactory<>("name"));
         NameCol.setCellFactory(TextFieldTableCell.<Landareak>forTableColumn());
@@ -69,7 +73,8 @@ public class Koldosaurus_app extends Application {
 
         TableColumn<Landareak, String> Description
                 = new TableColumn<>("Description");
-        Description.setMinWidth(200);
+        Description.setMinWidth(230);
+        Description.setMaxWidth(280);
         Description.setCellValueFactory(
                 new PropertyValueFactory<>("description"));
         Description.setCellFactory(TextFieldTableCell.<Landareak>forTableColumn());
@@ -81,6 +86,7 @@ public class Koldosaurus_app extends Application {
 
         TableColumn<Landareak, String> Color = new TableColumn<>("Color");
         Color.setMinWidth(100);
+        Color.setMaxWidth(150);
         Color.setCellValueFactory(
                 new PropertyValueFactory<>("color"));
         Color.setCellFactory(TextFieldTableCell.<Landareak>forTableColumn());
@@ -92,6 +98,7 @@ public class Koldosaurus_app extends Application {
 
         TableColumn<Landareak, String> Height = new TableColumn<>("Height");
         Height.setMinWidth(100);
+        Height.setMaxWidth(150);
         Height.setCellValueFactory(
                 new PropertyValueFactory<>("size"));
         Height.setCellFactory(TextFieldTableCell.<Landareak>forTableColumn());
@@ -104,6 +111,8 @@ public class Koldosaurus_app extends Application {
         TableColumn<Landareak, String> Flower
                 = new TableColumn<>("Flowers");
         Flower.setMinWidth(100);
+        Flower.setMaxWidth(150);
+
         Flower.setCellValueFactory(
                 new PropertyValueFactory<>("flowers"));
         Flower.setCellFactory(TextFieldTableCell.<Landareak>forTableColumn());
@@ -144,7 +153,7 @@ public class Koldosaurus_app extends Application {
         addAvHeight.setPromptText("Average Height");
 
         final TextField addCName = new TextField();
-        addCName.setMaxWidth(CName.getPrefWidth());
+        addCName.setMaxWidth(150);
         addCName.setPromptText("Cientific name");
 
         final RadioButton Flowers = new RadioButton();
@@ -155,32 +164,32 @@ public class Koldosaurus_app extends Application {
         addButton.setOnAction((ActionEvent e) -> {
             //objetu berria sortu
             if (addName.getText().equals("") || addDescription.getText().equals("") || addColor.getText().equals("") || addAvHeight.getText().equals("") || addCName.getText().equals("") || Flowers.getText().equals("")) {
-
+                lab.setText("You should fill all the fields");
             } else {
-                try{
+                try {
                     Float.parseFloat(addAvHeight.getText());
                     Landareak p = new Landareak(
-                        addName.getText(),
-                        addDescription.getText(),
-                        addColor.getText(),
-                        addAvHeight.getText(),
-                        Flowers.isSelected(),
-                        addCName.getText()
-                );
-                data.add(p);
+                            addName.getText(),
+                            addDescription.getText(),
+                            addColor.getText(),
+                            addAvHeight.getText(),
+                            Flowers.isSelected(),
+                            addCName.getText()
+                    );
+                    data.add(p);
 
-                //testuak garbitu
-                addName.clear();
-                addDescription.clear();
-                addColor.clear();
-                addAvHeight.clear();
-                addCName.clear();
-                Flowers.setSelected(false);
+                    //testuak garbitu
+                    addName.clear();
+                    addDescription.clear();
+                    addColor.clear();
+                    addAvHeight.clear();
+                    addCName.clear();
+                    Flowers.setSelected(false);
+                    lab.setText("");
+                } catch (NumberFormatException nf) {
+                    lab.setText("Average height should be a number");
                 }
-                catch(NumberFormatException nf){
-                    
-                }
-                
+
             }
         });
 
@@ -195,7 +204,7 @@ public class Koldosaurus_app extends Application {
         final VBox vbox = new VBox();
         vbox.setSpacing(5);
         vbox.setPadding(new Insets(10, 0, 0, 10));
-        vbox.getChildren().addAll(label, table, hb);
+        vbox.getChildren().addAll(label, lab, table, hb);
         ((Group) scene.getRoot()).getChildren().addAll(vbox);
         stage.setScene(scene);
         stage.show();

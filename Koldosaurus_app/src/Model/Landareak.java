@@ -56,7 +56,7 @@ public class Landareak {
         return Color;
     }
     public String getSize(){
-        return Size;
+        return Size+"m";
     }
     public String getFlowers(){
         return Flowers;
