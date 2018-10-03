@@ -27,6 +27,7 @@ import javafx.scene.control.cell.TextFieldTableCell;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
+import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import javafx.stage.Stage;
 import javax.swing.JOptionPane;
@@ -54,6 +55,7 @@ public class Koldosaurus_app extends Application {
         label.setFont(new Font("Arial", 20));
 
         final Label lab = new Label("");
+        lab.setTextFill(Color.web("#ff0000"));
         lab.setFont(new Font("Arial", 20));
 
         table.setEditable(true);

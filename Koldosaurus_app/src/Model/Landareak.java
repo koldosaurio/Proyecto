@@ -10,7 +10,8 @@ package Model;
  * @author DM3-2-15
  */
 public class Landareak {
-    private String Name,CName, Description,Color,Size,Flowers;
+    private String Name,CName, Description,Color,Flowers;
+    private float Size;
     public Landareak(){
         
     }
@@ -32,7 +33,7 @@ public class Landareak {
         Color=col;
     }
     public void setSize(String height){
-        Size=height;
+        Size=Float.parseFloat(height);
     }
     public void setFlowers(Boolean flow){
         if (flow==true){
