@@ -7,6 +7,7 @@ package View;
 
 import Control.LandareakGertu;
 import Model.Landareak;
+import java.io.IOException;
 import javafx.application.Application;
 import static javafx.application.Application.launch;
 import javafx.collections.ObservableList;
@@ -30,6 +31,7 @@ import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import javafx.stage.Stage;
+import javafx.stage.WindowEvent;
 import javax.swing.JOptionPane;
 
 /**
@@ -43,10 +45,10 @@ public class Koldosaurus_app extends Application {
     final HBox hb = new HBox();
 
     @Override
-    public void start(Stage stage) {
+    public void start(Stage stage) throws IOException {
         Scene scene = new Scene(new Group());
 
-        ObservableList<Landareak> data = LandareakGertu.cargarDatos();
+        ObservableList<Landareak> data = LandareakGertu.datuakKargatu();
 
         stage.setTitle("Data Table");
         stage.setWidth(900);
@@ -208,8 +210,14 @@ public class Koldosaurus_app extends Application {
         vbox.setPadding(new Insets(10, 0, 0, 10));
         vbox.getChildren().addAll(label, lab, table, hb);
         ((Group) scene.getRoot()).getChildren().addAll(vbox);
+        stage.setOnCloseRequest((WindowEvent event)-> {
+	            LandareakGertu.lista_gorde(data);
+	            System.out.println("kkk");
+	        });
         stage.setScene(scene);
+        
         stage.show();
+        
 
     }
 
