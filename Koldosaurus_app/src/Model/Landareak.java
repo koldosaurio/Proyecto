@@ -62,6 +62,14 @@ public class Landareak {
     public String getFlowers(){
         return Flowers;
     }
+    public boolean getFlowers(int i){
+        if(Flowers.equals("no")){
+            return false;
+        }
+        else{
+            return true;
+        }
+    }
     public String getCName(){
         return CName;
     }

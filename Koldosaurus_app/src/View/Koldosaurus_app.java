@@ -89,8 +89,8 @@ public class Koldosaurus_app extends Application {
                 });
 
         TableColumn<Landareak, String> Color = new TableColumn<>("Color");
-        Color.setMinWidth(100);
-        Color.setMaxWidth(150);
+        Color.setMinWidth(150);
+        Color.setMaxWidth(190);
         Color.setCellValueFactory(
                 new PropertyValueFactory<>("color"));
         Color.setCellFactory(TextFieldTableCell.<Landareak>forTableColumn());
@@ -127,7 +127,7 @@ public class Koldosaurus_app extends Application {
                 });
         TableColumn<Landareak, String> CName
                 = new TableColumn<>("Cientific Name");
-        CName.setMinWidth(150);
+        CName.setMinWidth(180);
         CName.setCellValueFactory(
                 new PropertyValueFactory<>("CName"));
         CName.setCellFactory(TextFieldTableCell.<Landareak>forTableColumn());

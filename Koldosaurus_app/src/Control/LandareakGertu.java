@@ -57,7 +57,7 @@ public class LandareakGertu {
         try{
         PrintWriter output = new PrintWriter(new FileWriter("Landareak.txt"));
         for (Landareak land : landare) {
-            output.printf(land.getName() + "#" + land.getDescription() + "#" + land.getColor() + "#" + land.getSize() + "#" + land.getFlowers() + "#" + land.getCName() + "\r\n");
+            output.printf(land.getName() + "#" + land.getDescription() + "#" + land.getColor() + "#" + land.getSize().replace(land.getSize().substring(land.getSize().length()-1), "") + "#" + land.getFlowers(3) + "#" + land.getCName() + "\r\n");
         }
         output.close();
         }catch(IOException io){
