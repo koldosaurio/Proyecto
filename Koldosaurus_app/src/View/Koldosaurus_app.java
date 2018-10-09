@@ -211,7 +211,7 @@ public class Koldosaurus_app extends Application {
         vbox.getChildren().addAll(label, lab, table, hb);
         ((Group) scene.getRoot()).getChildren().addAll(vbox);
         stage.setOnCloseRequest((WindowEvent event)-> {
-	            LandareakGertu.lista_gorde(data);
+	            LandareakGertu.lista_gordexml(data);
 	            System.out.println("kkk");
 	        });
         stage.setScene(scene);

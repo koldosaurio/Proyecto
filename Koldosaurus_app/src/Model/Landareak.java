@@ -10,8 +10,8 @@ package Model;
  * @author DM3-2-15
  */
 public class Landareak {
-    private String Name,CName, Description,Color,Flowers;
-    private float Size;
+    private String name,cName, description,color,flowers;
+    private float size;
     public Landareak(){
         
     }
@@ -24,46 +24,46 @@ public class Landareak {
         setCName(f);
     }
     public void setName(String name){
-        Name=name;
+        this.name=name;
     }
     public void setDescription(String desc){
-        Description=desc;
+        description=desc;
     }
     public void setColor(String col){
-        Color=col;
+        color=col;
     }
     public void setSize(String height){
-        Size=Float.parseFloat(height);
+        size=Float.parseFloat(height);
     }
     public void setFlowers(Boolean flow){
         if (flow==true){
-            Flowers="yes";
+            flowers="yes";
         }
         else{
-            Flowers="no";
+            flowers="no";
         }
         
     }
     public void setCName(String cname){
-        CName=cname;
+        cName=cname;
     }
     public String getName(){
-        return Name;
+        return name;
     }
     public String getDescription(){
-        return Description;
+        return description;
     }
     public String getColor(){
-        return Color;
+        return color;
     }
     public String getSize(){
-        return Size+"m";
+        return size+"m";
     }
     public String getFlowers(){
-        return Flowers;
+        return flowers;
     }
     public boolean getFlowers(int i){
-        if(Flowers.equals("no")){
+        if(flowers.equals("no")){
             return false;
         }
         else{
@@ -71,6 +71,6 @@ public class Landareak {
         }
     }
     public String getCName(){
-        return CName;
+        return cName;
     }
 }
