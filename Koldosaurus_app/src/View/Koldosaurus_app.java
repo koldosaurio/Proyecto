@@ -7,6 +7,7 @@ package View;
 
 import Control.LandareakGertu;
 import Model.Landareak;
+import java.io.File;
 import java.io.IOException;
 import javafx.application.Application;
 import static javafx.application.Application.launch;
@@ -30,6 +31,7 @@ import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
+import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
 import javax.swing.JOptionPane;
@@ -41,21 +43,28 @@ import javax.swing.JOptionPane;
 public class Koldosaurus_app extends Application {
 
     private final TableView<Landareak> table = new TableView<>();
-
+    File aukeratua;
+    ObservableList<Landareak> data=null;
     final HBox hb = new HBox();
 
     @Override
     public void start(Stage stage) throws IOException {
         Scene scene = new Scene(new Group());
-
-        ObservableList<Landareak> data = LandareakGertu.datuakKargatu();
-
         stage.setTitle("Data Table");
         stage.setWidth(900);
-        stage.setHeight(550);
+        stage.setHeight(600);
         final Label label = new Label("Landareak");
         label.setFont(new Font("Arial", 20));
-
+        
+        final Button fileChooser = new Button("Aukeratu fitxategia");
+        fileChooser.setOnAction((ActionEvent e) -> {
+            FileChooser fChooser = new FileChooser();
+            fChooser.setTitle("Aukeratu fitxategia");
+            aukeratua = fChooser.showOpenDialog(stage);
+            data = LandareakGertu.fitxategiaAukeratu(aukeratua);
+            table.setItems(data);
+        });
+        
         final Label lab = new Label("");
         lab.setTextFill(Color.web("#ff0000"));
         lab.setFont(new Font("Arial", 20));
@@ -208,16 +217,15 @@ public class Koldosaurus_app extends Application {
         final VBox vbox = new VBox();
         vbox.setSpacing(5);
         vbox.setPadding(new Insets(10, 0, 0, 10));
-        vbox.getChildren().addAll(label, lab, table, hb);
+        vbox.getChildren().addAll(label,fileChooser, lab, table, hb);
         ((Group) scene.getRoot()).getChildren().addAll(vbox);
-        stage.setOnCloseRequest((WindowEvent event)-> {
-	            LandareakGertu.lista_gordexml(data);
-	            System.out.println("kkk");
-	        });
+        stage.setOnCloseRequest((WindowEvent event) -> {
+            LandareakGertu.datuakGordeFitxategia(data,aukeratua);
+            //System.out.println("kkk");
+        });
         stage.setScene(scene);
-        
+
         stage.show();
-        
 
     }
 
