@@ -9,6 +9,8 @@ import Control.LandareakGertu;
 import Model.Landareak;
 import java.io.File;
 import java.io.IOException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javafx.application.Application;
 import static javafx.application.Application.launch;
 import javafx.collections.ObservableList;
@@ -220,8 +222,17 @@ public class Koldosaurus_app extends Application {
         vbox.getChildren().addAll(label,fileChooser, lab, table, hb);
         ((Group) scene.getRoot()).getChildren().addAll(vbox);
         stage.setOnCloseRequest((WindowEvent event) -> {
-            LandareakGertu.datuakGordeFitxategia(data,aukeratua);
-            //System.out.println("kkk");
+            //try {
+                LandareakGertu.datuakGordeFitxategia(data,aukeratua);
+                //System.out.println("kkk");
+                
+               // pruebas
+                //LandareakGertu.listaKargatuJson(data,aukeratua);
+                
+                
+            //} catch (Exception ex) {
+            //    System.out.println("cosas");
+            //}
         });
         stage.setScene(scene);
 

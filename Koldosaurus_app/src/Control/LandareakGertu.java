@@ -8,6 +8,7 @@ package Control;
 import Model.Landareak;
 import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileOutputStream;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
@@ -16,6 +17,8 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javax.json.Json;
+import javax.json.JsonArray;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -26,6 +29,13 @@ import javax.xml.transform.stream.StreamResult;
 import org.w3c.dom.Document;
 import org.w3c.dom.NodeList;
 import org.w3c.dom.Element;
+
+import javax.json.JsonObject;
+import javax.json.JsonArray;
+import javax.json.JsonArrayBuilder;
+import javax.json.JsonBuilderFactory;
+import javax.json.JsonObjectBuilder;
+import javax.json.JsonWriter;
 
 /**
  *
@@ -162,5 +172,23 @@ public class LandareakGertu {
         } catch (Exception e) {
             e.printStackTrace();
         }
+    }
+
+    public static void listaKargatuJson(ObservableList<Landareak> landare, File aukeratua) throws Exception {
+        JsonArrayBuilder aBuilder = Json.createArrayBuilder();
+        JsonArray landareak = aBuilder.build();
+        JsonObjectBuilder builder = Json.createObjectBuilder();
+        for (Landareak land : landare) {
+            builder.add("Name", land.getName());
+            builder.add("Description", land.getDescription());
+            builder.add("Color", land.getColor());
+            builder.add("Size", land.getSize());
+            builder.add("Flowers", land.getFlowers());
+            builder.add("CName", land.getCName());
+            JsonObject landarea = builder.build();
+            landareak.add(landarea);
+        }
+        JsonWriter jWriter= Json.createWriter(new FileOutputStream(aukeratua));
+        jWriter.writeObject((JsonObject) landareak);
     }
 }
