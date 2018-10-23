@@ -8,6 +8,8 @@ package Control;
 import Model.Landareak;
 import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.FileReader;
 import java.io.FileWriter;
@@ -18,7 +20,6 @@ import java.util.logging.Logger;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javax.json.Json;
-import javax.json.JsonArray;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -33,8 +34,8 @@ import org.w3c.dom.Element;
 import javax.json.JsonObject;
 import javax.json.JsonArray;
 import javax.json.JsonArrayBuilder;
-import javax.json.JsonBuilderFactory;
 import javax.json.JsonObjectBuilder;
+import javax.json.JsonReader;
 import javax.json.JsonWriter;
 
 /**
@@ -51,6 +52,8 @@ public class LandareakGertu {
                 return datuakKargatu(aukeratua);
             } else if (ext.equals(".xml")) {
                 return datuakKargatuxml(aukeratua);
+            } else if (ext.equals("json")) {
+                return listaKargatuJson(aukeratua);
             }
         } catch (IOException ex) {
             Logger.getLogger(LandareakGertu.class.getName()).log(Level.SEVERE, null, ex);
@@ -64,6 +67,8 @@ public class LandareakGertu {
             lista_gorde(land, aukeratua);
         } else if (ext.equals(".xml")) {
             lista_gordexml(land, aukeratua);
+        } else if (ext.equals(".json")) {
+            listaGordeJson(land, aukeratua);
         }
     }
 
@@ -151,6 +156,8 @@ public class LandareakGertu {
                 eLandare.appendChild(eColor);
 
                 Element eSize = doc.createElement("Size");
+                /*land.setSize(land.getSize().substring(0, land.getSize().length() - 1));
+                System.out.println(land.getSize());*/
                 eSize.appendChild(doc.createTextNode(land.getSize().replace(land.getSize().substring(land.getSize().length() - 1), "")));
                 eLandare.appendChild(eSize);
 
@@ -174,21 +181,56 @@ public class LandareakGertu {
         }
     }
 
-    public static void listaKargatuJson(ObservableList<Landareak> landare, File aukeratua) throws Exception {
+    public static void listaGordeJson(ObservableList<Landareak> landare, File aukeratua) {
         JsonArrayBuilder aBuilder = Json.createArrayBuilder();
-        JsonArray landareak = aBuilder.build();
-        JsonObjectBuilder builder = Json.createObjectBuilder();
-        for (Landareak land : landare) {
-            builder.add("Name", land.getName());
-            builder.add("Description", land.getDescription());
-            builder.add("Color", land.getColor());
-            builder.add("Size", land.getSize());
-            builder.add("Flowers", land.getFlowers());
-            builder.add("CName", land.getCName());
-            JsonObject landarea = builder.build();
-            landareak.add(landarea);
+        try {
+            JsonObjectBuilder builder = Json.createObjectBuilder();
+            for (Landareak land : landare) {
+                builder.add("Name", land.getName());
+                builder.add("Description", land.getDescription());
+                builder.add("Color", land.getColor());
+                builder.add("Size", land.getSize().replace(land.getSize().substring(land.getSize().length() - 1), ""));
+                builder.add("Flowers", land.getFlowers());
+                builder.add("CName", land.getCName());
+                JsonObject landarea = builder.build();
+                aBuilder.add(landarea);
+            }
+            JsonArray landareak = aBuilder.build();
+
+            JsonWriter jsn = Json.createWriter(new FileOutputStream(aukeratua));
+            jsn.writeArray(landareak);
+            jsn.close();
+        } catch (Exception r) {
+            System.out.println("kkkkk");
         }
-        JsonWriter jWriter= Json.createWriter(new FileOutputStream(aukeratua));
-        jWriter.writeObject((JsonObject) landareak);
+
+    }
+
+    public static ObservableList<Landareak> listaKargatuJson(File aukeratua) {
+        ObservableList<Landareak> listia = FXCollections.observableArrayList();
+        try {
+            JsonReader reader = Json.createReader(new FileInputStream(aukeratua));
+            JsonArray landareak = reader.readArray();
+            reader.close();
+
+            for (int i = 0; i < landareak.size(); i++) {
+                JsonObject n = landareak.getJsonObject(i);
+                Landareak land = new Landareak();
+                land.setName(n.getString("Name"));
+                land.setDescription(n.getString("Description"));
+                land.setColor(n.getString("Color"));
+                land.setSize(n.getString("Size"));
+                if (n.getString("Flowers").equals("yes")) {
+                    land.setFlowers(true);
+                }else{
+                    land.setFlowers(false);
+                }
+                land.setCName(n.getString("CName"));
+                listia.add(land);
+            }
+        } catch (FileNotFoundException e) {
+
+        }
+        return listia;
     }
 }

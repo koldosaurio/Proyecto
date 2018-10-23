@@ -222,17 +222,21 @@ public class Koldosaurus_app extends Application {
         vbox.getChildren().addAll(label,fileChooser, lab, table, hb);
         ((Group) scene.getRoot()).getChildren().addAll(vbox);
         stage.setOnCloseRequest((WindowEvent event) -> {
-            //try {
+            try {
+                //try {
                 LandareakGertu.datuakGordeFitxategia(data,aukeratua);
                 //System.out.println("kkk");
                 
-               // pruebas
+                // pruebas
                 //LandareakGertu.listaKargatuJson(data,aukeratua);
                 
                 
-            //} catch (Exception ex) {
-            //    System.out.println("cosas");
-            //}
+                //} catch (Exception ex) {
+                //    System.out.println("cosas");
+                //}
+            } catch (Exception ex) {
+                Logger.getLogger(Koldosaurus_app.class.getName()).log(Level.SEVERE, null, ex);
+            }
         });
         stage.setScene(scene);
 
