@@ -15,6 +15,7 @@ import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javafx.collections.FXCollections;
@@ -37,6 +38,7 @@ import javax.json.JsonArrayBuilder;
 import javax.json.JsonObjectBuilder;
 import javax.json.JsonReader;
 import javax.json.JsonWriter;
+import javax.json.stream.JsonParser;
 
 /**
  *
@@ -53,7 +55,8 @@ public class LandareakGertu {
             } else if (ext.equals(".xml")) {
                 return datuakKargatuxml(aukeratua);
             } else if (ext.equals("json")) {
-                return listaKargatuJson(aukeratua);
+                listaKargatuStringJSON(aukeratua);
+                return listaKargatuJson(aukeratua);//listaKargatuStringJSON(aukeratua);
             }
         } catch (IOException ex) {
             Logger.getLogger(LandareakGertu.class.getName()).log(Level.SEVERE, null, ex);
@@ -221,7 +224,7 @@ public class LandareakGertu {
                 land.setSize(n.getString("Size"));
                 if (n.getString("Flowers").equals("yes")) {
                     land.setFlowers(true);
-                }else{
+                } else {
                     land.setFlowers(false);
                 }
                 land.setCName(n.getString("CName"));
@@ -233,4 +236,46 @@ public class LandareakGertu {
         return listia;
     }
     //Hemendik aurrera json reader eta writer stream erabiliz
+
+    public static ObservableList<Landareak> listaKargatuStringJSON(File aukeratua) throws FileNotFoundException {
+        JsonParser parser = Json.createParser(new FileInputStream(aukeratua));
+        ObservableList<Landareak> listia = FXCollections.observableArrayList();
+        ArrayList<String> identifier=new ArrayList<String>();
+        boolean a=true;
+        while (parser.hasNext()) {
+            JsonParser.Event event = parser.next();
+            switch (event) {
+                case START_ARRAY:
+                case END_ARRAY:
+                case START_OBJECT:
+                case END_OBJECT:
+                case VALUE_FALSE:
+                case VALUE_NULL:
+                case VALUE_TRUE:
+                    System.out.println(event.toString());
+                    if(event.toString().equals("END_OBJECT")){
+                        if(identifier.get(4).equals("yes")){
+                            a=true;
+                        }else{
+                            a=false;
+                        }
+                        Landareak land=new Landareak(identifier.get(0),identifier.get(1),identifier.get(2),identifier.get(3),a,identifier.get(5));
+                        listia.add(land);
+                    }else if(event.toString().equals("START_OBJECT")){
+                        identifier.clear();
+                    }
+                    break;
+                case KEY_NAME:
+                    System.out.print(event.toString() + " "+ parser.getString() + " - ");
+                    
+                    break;
+                case VALUE_STRING:
+                case VALUE_NUMBER:
+                    System.out.println(event.toString() + " "+ parser.getString());
+                    identifier.add(parser.getString());
+                    break;
+            }
+        }
+        return listia;
+    }
 }
