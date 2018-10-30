@@ -67,7 +67,7 @@ public class LandareakGertu {
             lista_gorde(land, aukeratua);
         } else if (ext.equals(".xml")) {
             lista_gordexml(land, aukeratua);
-        } else if (ext.equals(".json")) {
+        } else if (ext.equals("json")) {
             listaGordeJson(land, aukeratua);
         }
     }
@@ -196,11 +196,10 @@ public class LandareakGertu {
                 aBuilder.add(landarea);
             }
             JsonArray landareak = aBuilder.build();
-
             JsonWriter jsn = Json.createWriter(new FileOutputStream(aukeratua));
             jsn.writeArray(landareak);
             jsn.close();
-        } catch (Exception r) {
+        } catch (FileNotFoundException r) {
             System.out.println("kkkkk");
         }
 
@@ -233,4 +232,5 @@ public class LandareakGertu {
         }
         return listia;
     }
+    //Hemendik aurrera json reader eta writer stream erabiliz
 }

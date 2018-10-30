@@ -15,11 +15,11 @@ import javafx.application.Application;
 import static javafx.application.Application.launch;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
-import javafx.event.EventHandler;
 import javafx.geometry.Insets;
 import javafx.scene.Group;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert;
+import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.RadioButton;
@@ -29,14 +29,12 @@ import javafx.scene.control.TextField;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.control.cell.TextFieldTableCell;
 import javafx.scene.layout.HBox;
-import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
-import javax.swing.JOptionPane;
 
 /**
  *
@@ -46,7 +44,7 @@ public class Koldosaurus_app extends Application {
 
     private final TableView<Landareak> table = new TableView<>();
     File aukeratua;
-    ObservableList<Landareak> data=null;
+    ObservableList<Landareak> data = null;
     final HBox hb = new HBox();
 
     @Override
@@ -57,16 +55,36 @@ public class Koldosaurus_app extends Application {
         stage.setHeight(600);
         final Label label = new Label("Landareak");
         label.setFont(new Font("Arial", 20));
-        
+
         final Button fileChooser = new Button("Aukeratu fitxategia");
         fileChooser.setOnAction((ActionEvent e) -> {
             FileChooser fChooser = new FileChooser();
             fChooser.setTitle("Aukeratu fitxategia");
             aukeratua = fChooser.showOpenDialog(stage);
-            data = LandareakGertu.fitxategiaAukeratu(aukeratua);
-            table.setItems(data);
+            try {
+                if (".json".equals(aukeratua.getName().substring(aukeratua.getName().length() - 5)) || ".txt".equals(aukeratua.getName().substring(aukeratua.getName().length() - 4)) || ".xml".equals(aukeratua.getName().substring(aukeratua.getName().length() - 4))) {
+                    data = LandareakGertu.fitxategiaAukeratu(aukeratua);
+                    if (data.size() == 0) {
+                        Alert alert = new Alert(AlertType.INFORMATION);
+                        alert.setTitle("Fitxategia hutsik egon daiteke");
+                        alert.setHeaderText(null);
+                        alert.setContentText(aukeratua.getName()+" fitxategia hutsik egon daiteke edo datuen formatua egokia ez izan");
+                        alert.showAndWait();
+                    } else {
+                        table.setItems(data);
+                    }
+                } else {
+                    Alert alert = new Alert(AlertType.INFORMATION);
+                    alert.setTitle("Fitxategi formatu ez egokia");
+                    alert.setHeaderText(null);
+                    alert.setContentText("\".json\" edo \".xml\" edo \".txt\" extensioa duen fitxategi bat aukeratu mesedez");
+                    alert.showAndWait();
+                }
+            } catch (NullPointerException er) {
+            }
+
         });
-        
+
         final Label lab = new Label("");
         lab.setTextFill(Color.web("#ff0000"));
         lab.setFont(new Font("Arial", 20));
@@ -219,21 +237,14 @@ public class Koldosaurus_app extends Application {
         final VBox vbox = new VBox();
         vbox.setSpacing(5);
         vbox.setPadding(new Insets(10, 0, 0, 10));
-        vbox.getChildren().addAll(label,fileChooser, lab, table, hb);
+        vbox.getChildren().addAll(label, fileChooser, lab, table, hb);
         ((Group) scene.getRoot()).getChildren().addAll(vbox);
         stage.setOnCloseRequest((WindowEvent event) -> {
             try {
-                //try {
-                LandareakGertu.datuakGordeFitxategia(data,aukeratua);
-                //System.out.println("kkk");
-                
-                // pruebas
-                //LandareakGertu.listaKargatuJson(data,aukeratua);
-                
-                
-                //} catch (Exception ex) {
-                //    System.out.println("cosas");
-                //}
+                try {
+                    LandareakGertu.datuakGordeFitxategia(data, aukeratua);
+                } catch (NullPointerException er) {
+                }
             } catch (Exception ex) {
                 Logger.getLogger(Koldosaurus_app.class.getName()).log(Level.SEVERE, null, ex);
             }
