@@ -38,6 +38,7 @@ import javax.json.JsonArrayBuilder;
 import javax.json.JsonObjectBuilder;
 import javax.json.JsonReader;
 import javax.json.JsonWriter;
+import javax.json.stream.JsonGenerator;
 import javax.json.stream.JsonParser;
 
 /**
@@ -237,11 +238,11 @@ public class LandareakGertu {
     }
     //Hemendik aurrera json reader eta writer stream erabiliz
 
-    public static ObservableList<Landareak> listaKargatuStringJSON(File aukeratua) throws FileNotFoundException {
+    public static ObservableList<Landareak> listaKargatuStringJSON(File aukeratua) throws FileNotFoundException {//Falta implementar al codigo
         JsonParser parser = Json.createParser(new FileInputStream(aukeratua));
         ObservableList<Landareak> listia = FXCollections.observableArrayList();
-        ArrayList<String> identifier=new ArrayList<String>();
-        boolean a=true;
+        ArrayList<String> identifier = new ArrayList<String>();
+        boolean a = true;
         while (parser.hasNext()) {
             JsonParser.Event event = parser.next();
             switch (event) {
@@ -253,29 +254,70 @@ public class LandareakGertu {
                 case VALUE_NULL:
                 case VALUE_TRUE:
                     System.out.println(event.toString());
-                    if(event.toString().equals("END_OBJECT")){
-                        if(identifier.get(4).equals("yes")){
-                            a=true;
-                        }else{
-                            a=false;
+                    if (event.toString().equals("END_OBJECT")) {
+                        if (identifier.get(4).equals("yes")) {
+                            a = true;
+                        } else {
+                            a = false;
                         }
-                        Landareak land=new Landareak(identifier.get(0),identifier.get(1),identifier.get(2),identifier.get(3),a,identifier.get(5));
+                        Landareak land = new Landareak(identifier.get(0), identifier.get(1), identifier.get(2), identifier.get(3), a, identifier.get(5));
                         listia.add(land);
-                    }else if(event.toString().equals("START_OBJECT")){
+                    } else if (event.toString().equals("START_OBJECT")) {
                         identifier.clear();
                     }
                     break;
                 case KEY_NAME:
-                    System.out.print(event.toString() + " "+ parser.getString() + " - ");
-                    
                     break;
                 case VALUE_STRING:
                 case VALUE_NUMBER:
-                    System.out.println(event.toString() + " "+ parser.getString());
                     identifier.add(parser.getString());
                     break;
             }
         }
         return listia;
+    }
+
+    //Hemen dago eredua idazteko stream moduan
+    /*FileWriter writer = new FileWriter("test.txt");
+JsonGenerator gen = Json.createGenerator(writer);
+gen.writeStartObject()
+   .write("firstName", "Duke")
+   .write("lastName", "Java")
+   .write("age", 18)
+   .write("streetAddress", "100 Internet Dr")
+   .write("city", "JavaTown")
+   .write("state", "JA")
+   .write("postalCode", "12345")
+   .writeStartArray("phoneNumbers")
+      .writeStartObject()
+         .write("type", "mobile")
+         .write("number", "111-111-1111")
+      .writeEnd()
+      .writeStartObject()
+         .write("type", "home")
+         .write("number", "222-222-2222")
+      .writeEnd()
+   .writeEnd()
+.writeEnd();
+gen.close();*/
+    public static void DatuakGordeJSONStream(ObservableList<Landareak> listia, File aukeratua) throws IOException {
+        FileWriter writer = new FileWriter(aukeratua);
+        JsonGenerator gen = Json.createGenerator(writer);
+        int i = 0;
+        try {
+            while (true) {
+                gen.writeStartObject()
+                        .write("Name", listia.get(i).getName())
+                        .write("Description", listia.get(i).getDescription())
+                        .write("Color", listia.get(i).getColor())
+                        .write("Size", listia.get(i).getSize())
+                        .write("Flowers", listia.get(i).getFlowers())
+                        .write("CName", listia.get(i).getCName())
+                        .writeEnd();
+                i++;
+            }
+        } catch (Exception e) {
+            gen.close();
+        }
     }
 }
