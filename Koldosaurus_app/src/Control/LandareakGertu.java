@@ -47,6 +47,7 @@ import javax.json.stream.JsonParser;
  */
 public class LandareakGertu {
 
+    
     public static ObservableList<Landareak> fitxategiaAukeratu(File aukeratua) {
 
         String ext = aukeratua.getName().substring(aukeratua.getName().length() - 4);
@@ -56,8 +57,13 @@ public class LandareakGertu {
             } else if (ext.equals(".xml")) {
                 return datuakKargatuxml(aukeratua);
             } else if (ext.equals("json")) {
-                listaKargatuStringJSON(aukeratua);
-                return listaKargatuJson(aukeratua);//listaKargatuStringJSON(aukeratua);
+                long sizeinkb=aukeratua.length()/1024;
+                if(sizeinkb<5){
+                    return listaKargatuJson(aukeratua);
+                }
+                else{
+                    return listaKargatuStringJSON(aukeratua);
+                }
             }
         } catch (IOException ex) {
             Logger.getLogger(LandareakGertu.class.getName()).log(Level.SEVERE, null, ex);
@@ -72,7 +78,13 @@ public class LandareakGertu {
         } else if (ext.equals(".xml")) {
             lista_gordexml(land, aukeratua);
         } else if (ext.equals("json")) {
-            listaGordeJson(land, aukeratua);
+            long sizeinkb=aukeratua.length()/1024;
+                if(sizeinkb<5){
+                    listaGordeJson(land, aukeratua);
+                }else{
+                    DatuakGordeJSONStream(land, aukeratua);
+                }
+            
         }
     }
 
@@ -253,7 +265,6 @@ public class LandareakGertu {
                 case VALUE_FALSE:
                 case VALUE_NULL:
                 case VALUE_TRUE:
-                    System.out.println(event.toString());
                     if (event.toString().equals("END_OBJECT")) {
                         if (identifier.get(4).equals("yes")) {
                             a = true;
@@ -300,24 +311,25 @@ gen.writeStartObject()
    .writeEnd()
 .writeEnd();
 gen.close();*/
-    public static void DatuakGordeJSONStream(ObservableList<Landareak> listia, File aukeratua) throws IOException {
-        FileWriter writer = new FileWriter(aukeratua);
-        JsonGenerator gen = Json.createGenerator(writer);
-        int i = 0;
+    public static void DatuakGordeJSONStream(ObservableList<Landareak> listia, File aukeratua) {
+        FileWriter writer;
         try {
-            while (true) {
+            JsonGenerator gen = Json.createGenerator(new FileWriter(aukeratua));
+            gen.writeStartArray();
+            for (Landareak i : listia) {
                 gen.writeStartObject()
-                        .write("Name", listia.get(i).getName())
-                        .write("Description", listia.get(i).getDescription())
-                        .write("Color", listia.get(i).getColor())
-                        .write("Size", listia.get(i).getSize())
-                        .write("Flowers", listia.get(i).getFlowers())
-                        .write("CName", listia.get(i).getCName())
+                        .write("Name", i.getName())
+                        .write("Description", i.getDescription())
+                        .write("Color", i.getColor())
+                        .write("Size", i.getSize().replace(i.getSize().substring(i.getSize().length() - 1), ""))
+                        .write("Flowers", i.getFlowers())
+                        .write("CName", i.getCName())
                         .writeEnd();
-                i++;
             }
-        } catch (Exception e) {
+            gen.writeEnd();
             gen.close();
+        } catch (IOException ex) {
         }
+
     }
 }
