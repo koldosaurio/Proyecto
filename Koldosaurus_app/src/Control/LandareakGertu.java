@@ -15,6 +15,9 @@ import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -46,9 +49,38 @@ import javax.json.stream.JsonParser;
  * @author DM3-2-15
  */
 public class LandareakGertu {
-
+    public static ObservableList<Landareak> datuBaseIzenak() {
+        ObservableList<Landareak> listia = FXCollections.observableArrayList();
+        
+        return listia;
+    }
     
-    public static ObservableList<Landareak> fitxategiaAukeratu(File aukeratua) {
+    public static void connect(String izena) {
+        Connection con = null;
+        try {
+            String url = "jdbc:sqlite:DBs\\"+izena;
+            con = DriverManager.getConnection(url);
+            System.out.println("Connection establecido madafuka");
+        } 
+        catch (SQLException sqex) 
+        {
+            System.out.println(sqex.getMessage());
+        } 
+        finally 
+        {
+            try {
+                if (con != null) {
+                    con.close();
+                }
+            } 
+            catch (SQLException sqex) {
+                System.out.println(sqex.getMessage());
+            }
+        }
+
+    }
+}
+   /* public static ObservableList<Landareak> fitxategiaAukeratu(File aukeratua) {
 
         String ext = aukeratua.getName().substring(aukeratua.getName().length() - 4);
         try {
@@ -173,7 +205,7 @@ public class LandareakGertu {
 
                 Element eSize = doc.createElement("Size");
                 /*land.setSize(land.getSize().substring(0, land.getSize().length() - 1));
-                System.out.println(land.getSize());*/
+                System.out.println(land.getSize());
                 eSize.appendChild(doc.createTextNode(land.getSize().replace(land.getSize().substring(land.getSize().length() - 1), "")));
                 eLandare.appendChild(eSize);
 
@@ -310,3 +342,4 @@ public class LandareakGertu {
 
     }
 }
+*/

@@ -9,18 +9,22 @@ import Control.LandareakGertu;
 import Model.Landareak;
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javafx.application.Application;
 import static javafx.application.Application.launch;
+import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.geometry.Insets;
 import javafx.scene.Group;
 import javafx.scene.Scene;
-import javafx.scene.control.Alert;
+import javafx.scene.control.Alert; 
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Button;
+import javafx.scene.control.ColorPicker;
+import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.RadioButton;
 import javafx.scene.control.TableColumn;
@@ -43,6 +47,7 @@ import javafx.stage.WindowEvent;
 public class Koldosaurus_app extends Application {
 
     private final TableView<Landareak> table = new TableView<>();
+    private Scene colorScene;
     File aukeratua;
     ObservableList<Landareak> data = null;
     final HBox hb = new HBox();
@@ -56,32 +61,33 @@ public class Koldosaurus_app extends Application {
         final Label label = new Label("Landareak");
         label.setFont(new Font("Arial", 20));
 
-        final Button fileChooser = new Button("Aukeratu fitxategia");
+        final Button fileChooser = new Button("Aukeratu Datu-basea");
         fileChooser.setOnAction((ActionEvent e) -> {
-            FileChooser fChooser = new FileChooser();
-            fChooser.setTitle("Aukeratu fitxategia");
-            aukeratua = fChooser.showOpenDialog(stage);
-            try {
-                if (".json".equals(aukeratua.getName().substring(aukeratua.getName().length() - 5)) || ".txt".equals(aukeratua.getName().substring(aukeratua.getName().length() - 4)) || ".xml".equals(aukeratua.getName().substring(aukeratua.getName().length() - 4))) {
-                    data = LandareakGertu.fitxategiaAukeratu(aukeratua);
-                    if (data.size() == 0) {
-                        Alert alert = new Alert(AlertType.INFORMATION);
-                        alert.setTitle("Fitxategia hutsik egon daiteke");
-                        alert.setHeaderText(null);
-                        alert.setContentText(aukeratua.getName()+" fitxategia hutsik egon daiteke edo datuen formatua egokia ez izan");
-                        alert.showAndWait();
-                    } else {
-                        table.setItems(data);
-                    }
-                } else {
-                    Alert alert = new Alert(AlertType.INFORMATION);
-                    alert.setTitle("Fitxategi formatu ez egokia");
-                    alert.setHeaderText(null);
-                    alert.setContentText("\".json\" edo \".xml\" edo \".txt\" extensioa duen fitxategi bat aukeratu mesedez");
-                    alert.showAndWait();
-                }
-            } catch (NullPointerException er) {
-            }
+            datuBaseaAukeratzen();
+//            FileChooser fChooser = new FileChooser();
+//            fChooser.setTitle("Aukeratu fitxategia");
+//            aukeratua = fChooser.showOpenDialog(stage);
+//            try {
+//                if (".json".equals(aukeratua.getName().substring(aukeratua.getName().length() - 5)) || ".txt".equals(aukeratua.getName().substring(aukeratua.getName().length() - 4)) || ".xml".equals(aukeratua.getName().substring(aukeratua.getName().length() - 4))) {
+//                    data = LandareakGertu.fitxategiaAukeratu(aukeratua);
+//                    if (data.size() == 0) {
+//                        Alert alert = new Alert(AlertType.INFORMATION);
+//                        alert.setTitle("Fitxategia hutsik egon daiteke");
+//                        alert.setHeaderText(null);
+//                        alert.setContentText(aukeratua.getName()+" fitxategia hutsik egon daiteke edo datuen formatua egokia ez izan");
+//                        alert.showAndWait();
+//                    } else {
+//                        table.setItems(data);
+//                    }
+//                } else {
+//                    Alert alert = new Alert(AlertType.INFORMATION);
+//                    alert.setTitle("Fitxategi formatu ez egokia");
+//                    alert.setHeaderText(null);
+//                    alert.setContentText("\".json\" edo \".xml\" edo \".txt\" extensioa duen fitxategi bat aukeratu mesedez");
+//                    alert.showAndWait();
+//                }
+//            } catch (NullPointerException er) {
+//            }
 
         });
 
@@ -242,7 +248,7 @@ public class Koldosaurus_app extends Application {
         stage.setOnCloseRequest((WindowEvent event) -> {
             try {
                 try {
-                    LandareakGertu.datuakGordeFitxategia(data, aukeratua);
+                    //LandareakGertu.datuakGordeFitxategia(data, aukeratua);
                 } catch (NullPointerException er) {
                 }
             } catch (Exception ex) {
@@ -260,6 +266,46 @@ public class Koldosaurus_app extends Application {
      */
     public static void main(String[] args) {
         launch(args);
+    }
+    
+    public void datuBaseaAukeratzen()
+    {
+        //beste lehio bat irekiko da
+        VBox vbox = new VBox();
+        vbox.setPadding(new Insets(20, 0, 0, 20));
+        ObservableList<String> datubasemotak=FXCollections.observableArrayList();
+        datubasemotak.add("");
+        datubasemotak.add("SQLite");
+        datubasemotak.add("MySQL");
+        Label secondLabel = new Label("Aukeratu datu-base mota:");
+        ComboBox womboCombo = new ComboBox();
+        womboCombo.setItems((ObservableList) datubasemotak);
+        
+        Label firstLabel = new Label("Sartu edo aukeratu datu-basearen izena:(Datu basea ez bada existitzen sortu egingo da)");
+        ComboBox womboCombo2 = new ComboBox();
+        womboCombo2.setItems(LandareakGertu.datuBaseIzenak());
+        womboCombo2.setEditable(true);
+       
+        Button btnGorde = new Button("Konexioa egin");       
+        btnGorde.setOnAction(e ->
+        {
+            LandareakGertu.connect("db1"+".db");
+        });
+       
+        vbox.getChildren().addAll(secondLabel,womboCombo,firstLabel,womboCombo2, btnGorde);
+        vbox.setSpacing(10);
+        colorScene = new Scene(vbox, 320, 230);
+
+        //lehio berria ireki
+        Stage newWindow = new Stage();
+        newWindow.setTitle("Datu basea aukeratzen");
+        newWindow.setScene(colorScene);
+
+        // lehioaren posizioa
+        newWindow.setX(500);
+        newWindow.setY(350);
+
+        newWindow.show();
     }
 
 }
