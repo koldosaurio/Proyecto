@@ -288,29 +288,6 @@ public class LandareakGertu {
         return listia;
     }
 
-    //Hemen dago eredua idazteko stream moduan
-    /*FileWriter writer = new FileWriter("test.txt");
-JsonGenerator gen = Json.createGenerator(writer);
-gen.writeStartObject()
-   .write("firstName", "Duke")
-   .write("lastName", "Java")
-   .write("age", 18)
-   .write("streetAddress", "100 Internet Dr")
-   .write("city", "JavaTown")
-   .write("state", "JA")
-   .write("postalCode", "12345")
-   .writeStartArray("phoneNumbers")
-      .writeStartObject()
-         .write("type", "mobile")
-         .write("number", "111-111-1111")
-      .writeEnd()
-      .writeStartObject()
-         .write("type", "home")
-         .write("number", "222-222-2222")
-      .writeEnd()
-   .writeEnd()
-.writeEnd();
-gen.close();*/
     public static void DatuakGordeJSONStream(ObservableList<Landareak> listia, File aukeratua) {
         FileWriter writer;
         try {
