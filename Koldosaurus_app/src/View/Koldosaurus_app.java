@@ -281,20 +281,20 @@ public class Koldosaurus_app extends Application {
         ComboBox womboCombo = new ComboBox();
         womboCombo.setItems((ObservableList) datubasemotak);
         
-        Label firstLabel = new Label("Sartu edo aukeratu datu-basearen izena:(Datu basea ez bada existitzen sortu egingo da)");
+        Label firstLabel = new Label("Sartu edo aukeratu datu-basearen izena:\n(Datu basea ez bada existitzen sortu egingo da)");
         ComboBox womboCombo2 = new ComboBox();
-        womboCombo2.setItems(LandareakGertu.datuBaseIzenak());
+        womboCombo2.setItems(LandareakGertu.datuBaseIzenZerrenda());
         womboCombo2.setEditable(true);
        
         Button btnGorde = new Button("Konexioa egin");       
         btnGorde.setOnAction(e ->
         {
-            LandareakGertu.connect("db1"+".db");
+            //LandareakGertu.connect("db1"+".db");
         });
        
         vbox.getChildren().addAll(secondLabel,womboCombo,firstLabel,womboCombo2, btnGorde);
         vbox.setSpacing(10);
-        colorScene = new Scene(vbox, 320, 230);
+        colorScene = new Scene(vbox, 420, 230);
 
         //lehio berria ireki
         Stage newWindow = new Stage();
@@ -302,7 +302,7 @@ public class Koldosaurus_app extends Application {
         newWindow.setScene(colorScene);
 
         // lehioaren posizioa
-        newWindow.setX(500);
+        newWindow.setX(700);
         newWindow.setY(350);
 
         newWindow.show();

@@ -17,7 +17,9 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.sql.Connection;
 import java.sql.DriverManager;
+import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -49,35 +51,64 @@ import javax.json.stream.JsonParser;
  * @author DM3-2-15
  */
 public class LandareakGertu {
-    public static ObservableList<Landareak> datuBaseIzenak() {
-        ObservableList<Landareak> listia = FXCollections.observableArrayList();
-        
-        return listia;
-    }
-    
-    public static void connect(String izena) {
+
+    public static Connection datuBaseIzenak() {
+
         Connection con = null;
         try {
-            String url = "jdbc:sqlite:DBs\\"+izena;
+            String url = "jdbc:sqlite:DBs\\datuBaseIzenak4.db";
             con = DriverManager.getConnection(url);
-            System.out.println("Connection establecido madafuka");
-        } 
-        catch (SQLException sqex) 
-        {
+        } catch (SQLException sqex) {
             System.out.println(sqex.getMessage());
-        } 
-        finally 
-        {
-            try {
-                if (con != null) {
-                    con.close();
-                }
-            } 
-            catch (SQLException sqex) {
-                System.out.println(sqex.getMessage());
-            }
+        }
+        return con;
+    }
+    public static void createTableSQLiteDatabases() {
+        
+        try(Connection con = datuBaseIzenak();Statement stmt=con.createStatement();){
+        String tablasortu = "CREATE TABLE IF NOT EXISTS SQLiteDatubaseak(\n"
+                + "izena text);";
+        stmt.execute(tablasortu);
+        }catch(SQLException sqlex){
+            System.out.println("error");
         }
 
+    }
+
+    public static ObservableList<String> datuBaseIzenZerrenda() {
+        ObservableList<String> listia = FXCollections.observableArrayList();
+        try(Connection con = datuBaseIzenak();
+                Statement stmt=con.createStatement()) {
+            String sententzia = "Select * from SQLiteDatubaseak";
+            ResultSet rs=stmt.executeQuery(sententzia);
+            while(rs.next()){
+                listia.add(rs.getString("izena"));
+            }
+
+        }catch(SQLException sqle){
+            System.out.println("error");
+        }
+
+        return listia;
+    }
+    public static Connection connectSQLite(String izena) {
+        Connection con = null;
+        try {
+            String url = "jdbc:sqlite:DBs\\" + izena;
+            con = DriverManager.getConnection(url);
+            String tablasortu = "CREATE TABLE IF NOT EXISTS landareak"
+                    + "(izena text Not Null,"
+                    + "Description text not null"
+                    + "color text not null"
+                    + "size integer not null"
+                    + "flowers text not null"
+                    + "CName text primary key);";
+            Statement stmt = con.createStatement();
+            stmt.execute(tablasortu);
+        } catch (SQLException sqex) {
+            System.out.println(sqex.getMessage());
+        }
+        return con;
     }
 }
    /* public static ObservableList<Landareak> fitxategiaAukeratu(File aukeratua) {
