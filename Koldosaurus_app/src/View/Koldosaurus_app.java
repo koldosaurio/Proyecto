@@ -20,6 +20,8 @@ import javafx.event.ActionEvent;
 import javafx.geometry.Insets;
 import javafx.scene.Group;
 import javafx.scene.Scene;
+import javafx.scene.control.Alert;
+import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
@@ -44,6 +46,7 @@ public class Koldosaurus_app extends Application {
 
     private final TableView<Landareak> table = new TableView<>();
     private Scene colorScene;
+    private String datuBaseIzena;
     ObservableList<Landareak> data = null;
     final HBox hb = new HBox();
 
@@ -59,7 +62,7 @@ public class Koldosaurus_app extends Application {
         final Button dataChooser = new Button("Aukeratu Datu-basea");
         dataChooser.setOnAction((ActionEvent e) -> {
             datuBaseaAukeratzen();
-
+            
         });
 
         final Label lab = new Label("");
@@ -186,6 +189,8 @@ public class Koldosaurus_app extends Application {
                             Flowers.isSelected(),
                             addCName.getText()
                     );
+                    //hau ez dago guztiz ondo funzionatzen
+                    LandareakGertu.addToDatabase(p, datuBaseIzena);
                     data.add(p);
 
                     //testuak garbitu
@@ -206,6 +211,7 @@ public class Koldosaurus_app extends Application {
         final Button removeButton = new Button("Delete selected");
         removeButton.setOnAction((ActionEvent e) -> {
             Landareak landare = table.getSelectionModel().getSelectedItem();
+            LandareakGertu.deleteFromDatabase(landare, datuBaseIzena);
             data.remove(landare);
         });
 
@@ -247,34 +253,44 @@ public class Koldosaurus_app extends Application {
         datubasemotak.add("SQLite");
         datubasemotak.add("MySQL");
         Label secondLabel = new Label("Aukeratu datu-base mota:");
-        
+
         ComboBox womboCombo = new ComboBox();
         womboCombo.setItems((ObservableList) datubasemotak);
-        
+
         ComboBox womboCombo2 = new ComboBox();
         womboCombo2.setEditable(true);
-        
+
         womboCombo.getSelectionModel().selectedItemProperty().addListener((options, oldValue, newValue) -> {
-            if(newValue=="SQLite"){
+            if (newValue == "SQLite") {
                 womboCombo2.setItems(LandareakGertu.datuBaseIzenZerrenda("SQLite"));
-            }
-            else{
+            } else {
                 womboCombo2.setItems(LandareakGertu.datuBaseIzenZerrenda(""));
             }
         }
         );
 
         Label firstLabel = new Label("Sartu edo aukeratu datu-basearen izena:\n(Datu basea ez bada existitzen sortu egingo da)");
-        
-        
+        Alert alert = new Alert(AlertType.WARNING);
+        alert.setTitle("Datu-basea falta da");
+        alert.setHeaderText("Kontuz!");
+        alert.setContentText("Ez duzu datu basearen izena edo mota aukeratu");
 
         Button btnGorde = new Button("Konexioa egin");
         btnGorde.setOnAction(e
                 -> {
-            if(womboCombo.getSelectionModel().getSelectedItem().toString().equals("SQLite")){
-                data=LandareakGertu.SQLiteDatuak(womboCombo2.getSelectionModel().getSelectedItem().toString()+".db");
-            }else{
-                
+            try{
+            if (womboCombo.getSelectionModel().getSelectedItem().toString().equals("") & womboCombo2.getSelectionModel().getSelectedItem().toString().equals("")) {
+            } else {
+                if (womboCombo.getSelectionModel().getSelectedItem().toString().equals("SQLite")) {
+                    data = LandareakGertu.SQLiteDatuak(womboCombo2.getSelectionModel().getSelectedItem().toString() + ".db");
+                    datuBaseIzena=womboCombo2.getSelectionModel().getSelectedItem().toString();
+                    table.setItems(data);
+                } else {
+
+                }
+            }
+            }catch(NullPointerException ex){
+                alert.showAndWait();
             }
             //LandareakGertu.connect("db1"+".db");
         });

@@ -117,6 +117,25 @@ public class LandareakGertu {
         }
         return listia;
     }
+    public static void addToDatabase(Landareak landarea, String datubasea){
+        try(Connection con=connectSQLite(datubasea+".db");
+                Statement stmt=con.createStatement();){
+            String inserta = "insert into landareak values('"+landarea.getName()+"','"+landarea.getDescription()+"','"+landarea.getColor()+"',"+Float.parseFloat(landarea.getSize().replace(landarea.getSize().substring(landarea.getSize().length()-1,landarea.getSize().length()), ""))+",'"+landarea.getFlowers()+"','"+landarea.getCName()+"');";
+            stmt.executeUpdate(inserta);
+        }catch(SQLException exSQL){
+            System.out.println("ERROR");
+        }
+    }
+    public static void deleteFromDatabase(Landareak landarea, String datubasea){
+        //http://www.sqlitetutorial.net/sqlite-java/delete/
+        try(Connection con=connectSQLite(datubasea+".db");
+                Statement stmt=con.createStatement();){
+            String inserta = "delete from landareak where CName='"+landarea.getCName()+"');";
+            stmt.executeUpdate(inserta);
+        }catch(SQLException exSQL){
+            System.out.println("ERROR");
+        }
+    }
 
 }
 /* public static ObservableList<Landareak> fitxategiaAukeratu(File aukeratua) {
