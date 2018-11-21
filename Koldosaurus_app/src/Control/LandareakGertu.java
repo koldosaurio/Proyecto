@@ -6,45 +6,13 @@
 package Control;
 
 import Model.Landareak;
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.FileReader;
-import java.io.FileWriter;
-import java.io.IOException;
-import java.io.PrintWriter;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
-import java.util.ArrayList;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-import javax.json.Json;
-
-import javax.xml.parsers.DocumentBuilder;
-import javax.xml.parsers.DocumentBuilderFactory;
-import javax.xml.transform.Transformer;
-import javax.xml.transform.TransformerFactory;
-import javax.xml.transform.dom.DOMSource;
-import javax.xml.transform.stream.StreamResult;
-import org.w3c.dom.Document;
-import org.w3c.dom.NodeList;
-import org.w3c.dom.Element;
-
-import javax.json.JsonObject;
-import javax.json.JsonArray;
-import javax.json.JsonArrayBuilder;
-import javax.json.JsonObjectBuilder;
-import javax.json.JsonReader;
-import javax.json.JsonWriter;
-import javax.json.stream.JsonGenerator;
-import javax.json.stream.JsonParser;
 
 /**
  *
@@ -63,45 +31,55 @@ public class LandareakGertu {
         }
         return con;
     }
+
     public static void createTableSQLiteDatabases() {
-        
-        try(Connection con = datuBaseIzenak();Statement stmt=con.createStatement();){
-        String tablasortu = "CREATE TABLE IF NOT EXISTS SQLiteDatubaseak(\n"
-                + "izena text);";
-        stmt.execute(tablasortu);
-        }catch(SQLException sqlex){
+
+        try (Connection con = datuBaseIzenak(); Statement stmt = con.createStatement();) {
+            String tablasortu = "CREATE TABLE IF NOT EXISTS SQLiteDatubaseak(\n"
+                    + "izena text,"
+                    + "mota text);";
+            stmt.execute(tablasortu);
+        } catch (SQLException sqlex) {
             System.out.println("error");
         }
 
     }
 
-    public static ObservableList<String> datuBaseIzenZerrenda() {
+    public static ObservableList<String> datuBaseIzenZerrenda(String mota) {
         ObservableList<String> listia = FXCollections.observableArrayList();
-        try(Connection con = datuBaseIzenak();
-                Statement stmt=con.createStatement()) {
-            String sententzia = "Select * from SQLiteDatubaseak";
-            ResultSet rs=stmt.executeQuery(sententzia);
-            while(rs.next()){
+        try (Connection con = datuBaseIzenak();
+                Statement stmt = con.createStatement()) {
+            String sententzia = "";
+            if (mota.equals("SQLite")) {
+                sententzia = "Select * from SQLiteDatubaseak WHERE mota = 'SQLite'";
+            } else {
+                sententzia = "Select * from SQLiteDatubaseak WHERE mota = 'MYSQL'";
+            }
+
+            ResultSet rs = stmt.executeQuery(sententzia);
+            while (rs.next()) {
                 listia.add(rs.getString("izena"));
             }
 
-        }catch(SQLException sqle){
+        } catch (SQLException sqle) {
             System.out.println("error");
         }
 
         return listia;
     }
+
     public static Connection connectSQLite(String izena) {
         Connection con = null;
         try {
             String url = "jdbc:sqlite:DBs\\" + izena;
             con = DriverManager.getConnection(url);
+            //ez dau tabla sortzen
             String tablasortu = "CREATE TABLE IF NOT EXISTS landareak"
-                    + "(izena text Not Null,"
-                    + "Description text not null"
-                    + "color text not null"
-                    + "size integer not null"
-                    + "flowers text not null"
+                    + "(izena text,"
+                    + "Description text,"
+                    + "color text,"
+                    + "size integer,"
+                    + "flowers text,"
                     + "CName text primary key);";
             Statement stmt = con.createStatement();
             stmt.execute(tablasortu);
@@ -110,8 +88,38 @@ public class LandareakGertu {
         }
         return con;
     }
+
+    //Debug missing
+    public static ObservableList<Landareak> SQLiteDatuak(String izena) {
+        ObservableList<Landareak> listia = FXCollections.observableArrayList();
+        try (Connection con = connectSQLite(izena);
+                Statement stmt = con.createStatement()) {
+            izena = izena.replace(izena.substring(izena.length() - 3), "");
+            if (datuBaseIzenZerrenda("SQLite").contains(izena)) {
+                String sententzia = "SELECT * from landareak";
+                ResultSet rs = stmt.executeQuery(sententzia);
+                while (rs.next()) {
+                    Landareak land = new Landareak(rs.getString("izena"), rs.getString("Description"), rs.getString("color"), rs.getInt("size") + "", Boolean.parseBoolean(rs.getString("flowers")), rs.getString("CName"));
+                    listia.add(land);
+                }
+            } else {
+                try (Connection con2 = datuBaseIzenak();
+                        Statement stmt2 = con2.createStatement()) {
+                    String gehituTaula = "insert into SQLiteDatubaseak values('" + izena + "','SQLite');";
+                    stmt2.executeUpdate(gehituTaula);
+                } catch (SQLException sqlex) {
+                    System.out.println(sqlex.getMessage());
+                }
+            }
+
+        } catch (SQLException sqlex) {
+            System.out.println(sqlex.getMessage());
+        }
+        return listia;
+    }
+
 }
-   /* public static ObservableList<Landareak> fitxategiaAukeratu(File aukeratua) {
+/* public static ObservableList<Landareak> fitxategiaAukeratu(File aukeratua) {
 
         String ext = aukeratua.getName().substring(aukeratua.getName().length() - 4);
         try {
@@ -373,4 +381,4 @@ public class LandareakGertu {
 
     }
 }
-*/
+ */
