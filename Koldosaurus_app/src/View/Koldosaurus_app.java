@@ -69,7 +69,7 @@ public class Koldosaurus_app extends Application {
         lab.setTextFill(Color.web("#ff0000"));
         lab.setFont(new Font("Arial", 20));
 
-        table.setEditable(true);
+        table.setEditable(false);
 
         TableColumn<Landareak, String> NameCol
                 = new TableColumn<>("Name");
@@ -264,7 +264,7 @@ public class Koldosaurus_app extends Application {
             if (newValue == "SQLite") {
                 womboCombo2.setItems(LandareakGertu.datuBaseIzenZerrenda("SQLite"));
             } else {
-                womboCombo2.setItems(LandareakGertu.datuBaseIzenZerrenda(""));
+                womboCombo2.setItems(LandareakGertu.datuBaseIzenZerrenda("MYSQL"));
             }
         }
         );
@@ -279,14 +279,16 @@ public class Koldosaurus_app extends Application {
         btnGorde.setOnAction(e
                 -> {
             try{
-            if (womboCombo.getSelectionModel().getSelectedItem().toString().equals("") & womboCombo2.getSelectionModel().getSelectedItem().toString().equals("")) {
+            if (womboCombo.getSelectionModel().getSelectedItem().toString().equals("") | womboCombo2.getSelectionModel().getSelectedItem().toString().equals("")) {
             } else {
                 if (womboCombo.getSelectionModel().getSelectedItem().toString().equals("SQLite")) {
                     data = LandareakGertu.SQLiteDatuak(womboCombo2.getSelectionModel().getSelectedItem().toString() + ".db");
                     datuBaseIzena=womboCombo2.getSelectionModel().getSelectedItem().toString();
                     table.setItems(data);
                 } else {
-
+                    data=LandareakGertu.MySQLDatuak(womboCombo2.getSelectionModel().getSelectedItem().toString());
+                    datuBaseIzena=womboCombo2.getSelectionModel().getSelectedItem().toString();
+                    table.setItems(data);
                 }
             }
             }catch(NullPointerException ex){
