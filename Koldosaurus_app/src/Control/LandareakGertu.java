@@ -149,9 +149,9 @@ public class LandareakGertu {
     public static ObservableList<Landareak> MySQLDatuak(String izena) {
         ObservableList<Landareak> listia = FXCollections.observableArrayList();
         //Lio guapua hurrengo lineakin :(
-        try (Connection con = DriverManager.getConnection(izena.replace(izena.substring(izena.length() - 3), ""),"root","root");
+        try (Connection con = KonexioaMySQL(izena);
                 Statement stmt = con.createStatement()) {
-            izena = izena.replace(izena.substring(izena.length() - 3), "");
+            //izena = izena.replace(izena.substring(izena.length() - 3), "");
             if (datuBaseIzenZerrenda("MYSQL").contains(izena)) {
                 String sententzia = "SELECT * from landareak";
                 ResultSet rs = stmt.executeQuery(sententzia);
@@ -183,7 +183,18 @@ public class LandareakGertu {
         return listia;
     }
 
-    public static Connection KonexioaMySQL() {
+    public static Connection KonexioaMySQL(String izena) throws SQLException {
+        String database = "jdbc:mysql://localhost"+"/"+izena;
+        Connection conn = null;
+            String user = "root";
+            String pass = "root";
+            conn = DriverManager.getConnection(database, user, pass);
+
+            System.out.println("Connection to MYSQL has been established.");
+        return conn;
+    }
+    
+    public static Connection ConnectLocalhost() {
         String database = "jdbc:mysql://localhost";
         Connection conn = null;
         try {
@@ -191,7 +202,7 @@ public class LandareakGertu {
             String pass = "root";
             conn = DriverManager.getConnection(database, user, pass);
 
-            System.out.println("Connection to SQLite has been established.");
+            System.out.println("Connection to MYSQL has been established.");
         } catch (SQLException ahh) {
             System.out.println(ahh.getMessage());
         }
@@ -199,7 +210,7 @@ public class LandareakGertu {
     }
 
     public static void datubaseaSortu(String datubasea) {
-        try (Connection conn = KonexioaMySQL(); Statement state = conn.createStatement()) {
+        try (Connection conn = ConnectLocalhost(); Statement state = conn.createStatement()) {
             String sql = "CREATE DATABASE " + datubasea;
             state.execute(sql);
             System.out.println("Datu basea sortu da");
@@ -209,13 +220,15 @@ public class LandareakGertu {
         }
     }
 
-    public static void taulaSortu(String database) {
-        String sql = "CREATE TABLE IF NOT EXISTS landareak(\n"
-                + "id integer PRIMARY KEY,\n"
-                + "name text NOT NULL,\n"
-                + "capacity text\n"
-                + ");";
-        try (Connection conn = DriverManager.getConnection(database, "root", "root");
+    public static void taulaSortu(String database) throws SQLException {
+        String sql = "CREATE TABLE IF NOT EXISTS landareak("
+                + " izena varchar(25),"
+                + " Description varchar(25) NOT NULL,"
+                + " color varchar(25),"
+                + " size varchar(25),"
+                + " flowers varchar(25),"
+                + " CName varchar(25) PRIMARY KEY);";
+        try (Connection conn = KonexioaMySQL(database);
                 Statement stmt = conn.createStatement()) {
             // create a new table
             stmt.execute(sql);
@@ -224,6 +237,7 @@ public class LandareakGertu {
         }
     }
 
+    
 }
 /*
 package connection;
