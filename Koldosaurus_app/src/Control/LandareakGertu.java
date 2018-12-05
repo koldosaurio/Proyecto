@@ -90,7 +90,6 @@ public class LandareakGertu {
         return con;
     }
 
-    //Debug missing
     public static ObservableList<Landareak> SQLiteDatuak(String izena) {
         ObservableList<Landareak> listia = FXCollections.observableArrayList();
         try (Connection con = connectSQLite(izena);
@@ -236,95 +235,31 @@ public class LandareakGertu {
             System.out.println(e.getMessage());
         }
     }
-
     
-}
-/*
-package connection;
-
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.SQLException;
-
-public class Konexioa
-{
-    public static Connection Konexioa()
-    {
-        String database = "jdbc:mysql://localhost";
-        Connection conn = null;
-        try
-        {           
-            String user = "root";
-            String pass = "root";
-            conn = DriverManager.getConnection(database, user, pass);
-           
-            System.out.println("Connection to SQLite has been established.");
-        }
-        catch(SQLException ahh)
-        {
-            System.out.println(ahh.getMessage());
-        }
-        return conn;
-    }
-}
-
-package SQL_sententziak;
-
-import connection.Konexioa;
-import java.sql.Connection;
-import java.sql.DatabaseMetaData;
-import java.sql.DriverManager;
-import java.sql.PreparedStatement;
-import java.sql.SQLException;
-import java.sql.Statement;
-
-public class SQLsententziak
-{
-    public static void datubaseaSortu()
-    {
-        try(Connection conn = Konexioa.Konexioa(); Statement state = conn.createStatement())
-        {
-            DatabaseMetaData meta = conn.getMetaData();
-            System.out.println("The driver name is "+ meta.getDriverName());
-            String sql = "CREATE DATABASE izaPaliza";
-            state.execute(sql);
-            System.out.println("Datu basea sortu da");
-        }
-        catch(SQLException ahh)
-        {
-            System.out.println("Errorea datu basea sortzerakoan");
-        }
-    }
-    public static void taulaSortu(String database, String table)
-    {
-        String sql = "CREATE TABLE IF NOT EXISTS "+ table + "(\n"
-                + "id integer PRIMARY KEY,\n"
-                + "name text NOT NULL,\n"
-                + "capacity text\n"
-                + ");";
-        try (Connection conn = DriverManager.getConnection(database,"root","root");
+    public static void addToDatabaseMySQL(String database, Landareak land){
+        String sql="insert into landareak values('" + land.getName() + "',"
+                + "'" + land.getDescription() + "',"
+                + "'" + land.getColor() + "',"
+                + "" + Float.parseFloat(land.getSize().replace(land.getSize().substring(land.getSize().length() - 1, land.getSize().length()), "")) + ","
+                + "'" + land.getFlowers() + "',"
+                + "'" + land.getCName() + "');";
+        
+        try (Connection conn = KonexioaMySQL(database);
                 Statement stmt = conn.createStatement()) {
             // create a new table
-            stmt.execute(sql);
+            stmt.executeUpdate(sql);
         } catch (SQLException e) {
             System.out.println(e.getMessage());
         }
     }
-    public static void insert(String database, String table ,int ID, String name, String capacity) throws SQLException
-    {
-        String sql = "INSERT INTO "+table+" (id, name, capacity) VALUES(?,?,?)";
-       
-        try (Connection conn = DriverManager.getConnection(database, "root", "root"); PreparedStatement pstmt = conn.prepareStatement(sql))
-        {
-            pstmt.setInt(1, ID);
-            pstmt.setString(2, name);
-            pstmt.setString(3, capacity);
-            pstmt.executeUpdate();
-        }
-        catch (SQLException e)
-        {
+    public static void deleteFromDatabaseMySQL(String database, Landareak land){
+        String sql = "DELETE FROM landareak WHERE CName = '"+land.getCName()+"'";
+        try (Connection conn = KonexioaMySQL(database);
+                Statement stmt = conn.createStatement()) {
+            // create a new table
+            stmt.executeUpdate(sql);
+        } catch (SQLException e) {
             System.out.println(e.getMessage());
         }
     }
 }
- */

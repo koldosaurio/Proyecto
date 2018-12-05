@@ -47,6 +47,7 @@ public class Koldosaurus_app extends Application {
     private final TableView<Landareak> table = new TableView<>();
     private Scene colorScene;
     private String datuBaseIzena;
+    private String datubaseMota = "";
     ObservableList<Landareak> data = null;
     final HBox hb = new HBox();
 
@@ -62,7 +63,7 @@ public class Koldosaurus_app extends Application {
         final Button dataChooser = new Button("Aukeratu Datu-basea");
         dataChooser.setOnAction((ActionEvent e) -> {
             datuBaseaAukeratzen();
-            
+
         });
 
         final Label lab = new Label("");
@@ -189,11 +190,21 @@ public class Koldosaurus_app extends Application {
                             Flowers.isSelected(),
                             addCName.getText()
                     );
-                    //hau ez dago guztiz ondo funzionatzen
-                    LandareakGertu.addToDatabase(p, datuBaseIzena);
-                    data.add(p);
+                    Alert alerta = new Alert(AlertType.WARNING);
+                    alerta.setTitle("Ez dago daut baserik aukeratuta");
+                    alerta.setHeaderText("Kontuz!");
+                    alerta.setContentText("Datu base batera datuak gehitzeko lehenengo aukeratu datu base bat!");
+                    //Ez badu datu baserik aukeratu aukeratzeko eskatuko dio
+                    if (datubaseMota.equals("SQLite")) {
+                        LandareakGertu.addToDatabase(p, datuBaseIzena);
+                        data.add(p);
+                    } else if (datubaseMota.equals("MYSQL")) {
+                        LandareakGertu.addToDatabaseMySQL(datuBaseIzena, p);
+                        data.add(p);
+                    } else {
+                        alerta.show();
+                    }
 
-                    //testuak garbitu
                     addName.clear();
                     addDescription.clear();
                     addColor.clear();
@@ -211,7 +222,11 @@ public class Koldosaurus_app extends Application {
         final Button removeButton = new Button("Delete selected");
         removeButton.setOnAction((ActionEvent e) -> {
             Landareak landare = table.getSelectionModel().getSelectedItem();
-            LandareakGertu.deleteFromDatabase(landare, datuBaseIzena);
+            if (datubaseMota.equals("SQLite")) {
+                LandareakGertu.deleteFromDatabase(landare, datuBaseIzena);
+            }else{
+                LandareakGertu.deleteFromDatabaseMySQL(datuBaseIzena, landare);
+            }
             data.remove(landare);
         });
 
@@ -278,20 +293,22 @@ public class Koldosaurus_app extends Application {
         Button btnGorde = new Button("Konexioa egin");
         btnGorde.setOnAction(e
                 -> {
-            try{
-            if (womboCombo.getSelectionModel().getSelectedItem().toString().equals("") | womboCombo2.getSelectionModel().getSelectedItem().toString().equals("")) {
-            } else {
-                if (womboCombo.getSelectionModel().getSelectedItem().toString().equals("SQLite")) {
-                    data = LandareakGertu.SQLiteDatuak(womboCombo2.getSelectionModel().getSelectedItem().toString() + ".db");
-                    datuBaseIzena=womboCombo2.getSelectionModel().getSelectedItem().toString();
-                    table.setItems(data);
+            try {
+                if (womboCombo.getSelectionModel().getSelectedItem().toString().equals("") | womboCombo2.getSelectionModel().getSelectedItem().toString().equals("")) {
                 } else {
-                    data=LandareakGertu.MySQLDatuak(womboCombo2.getSelectionModel().getSelectedItem().toString());
-                    datuBaseIzena=womboCombo2.getSelectionModel().getSelectedItem().toString();
-                    table.setItems(data);
+                    if (womboCombo.getSelectionModel().getSelectedItem().toString().equals("SQLite")) {
+                        data = LandareakGertu.SQLiteDatuak(womboCombo2.getSelectionModel().getSelectedItem().toString() + ".db");
+                        datubaseMota = "SQLite";
+                        datuBaseIzena = womboCombo2.getSelectionModel().getSelectedItem().toString();
+                        table.setItems(data);
+                    } else {
+                        data = LandareakGertu.MySQLDatuak(womboCombo2.getSelectionModel().getSelectedItem().toString());
+                        datuBaseIzena = womboCombo2.getSelectionModel().getSelectedItem().toString();
+                        datubaseMota = "MYSQL";
+                        table.setItems(data);
+                    }
                 }
-            }
-            }catch(NullPointerException ex){
+            } catch (NullPointerException ex) {
                 alert.showAndWait();
             }
             //LandareakGertu.connect("db1"+".db");
